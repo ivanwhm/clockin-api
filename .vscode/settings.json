@@ -1,6 +1,11 @@
 {
     "cSpell.words": [
         "clockin",
+        "dtos",
+        "maxlength",
+        "metatype",
+        "minlength",
+        "mongodb",
         "nestjs",
         "prebuild"
     ]

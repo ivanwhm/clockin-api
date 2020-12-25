@@ -1,11 +1,20 @@
 import { Module } from '@nestjs/common';
+import { APP_FILTER } from '@nestjs/core';
 
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { DatabaseModule } from './core';
+import { AccountModule } from './features';
+import { SharedModule } from './shared';
+import { HttpErrorFilter } from './shared/filters';
 
 @Module({
-  imports: [],
+  imports: [DatabaseModule, AccountModule, SharedModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: HttpErrorFilter,
+    },
+  ],
 })
 export class AppModule {}
