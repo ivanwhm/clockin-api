@@ -12,9 +12,5 @@ export interface Config {
     user: string;
     password: string;
     name: string;
-    useNewUrlParser: boolean;
-    useUnifiedTopology: boolean;
-    useCreateIndex: boolean;
-    useFindAndModify: boolean;
   };
 }

@@ -5,7 +5,7 @@ import { CompareValidator } from './compare.validator';
 describe('CompareValidator', () => {
   let compareValidator: CompareValidator;
 
-  beforeAll(() => {
+  beforeEach(() => {
     compareValidator = new CompareValidator();
   });
 
@@ -20,6 +20,7 @@ describe('CompareValidator', () => {
       };
       expect(compareValidator.validate('value', args)).toBeTruthy();
     });
+
     it('Should return false when values are different.', () => {
       const args: ValidationArguments = {
         targetName: 'SomeDto',
@@ -30,6 +31,7 @@ describe('CompareValidator', () => {
       };
       expect(compareValidator.validate('value1', args)).toBeFalsy();
     });
+
     it('Should return false when values are from different types.', () => {
       const args: ValidationArguments = {
         targetName: 'SomeDto',
@@ -40,12 +42,15 @@ describe('CompareValidator', () => {
       };
       expect(compareValidator.validate(123, args)).toBeFalsy();
     });
+
     it('Should return false when arguments are undefined.', () => {
       expect(compareValidator.validate(123)).toBeFalsy();
     });
+
     it('Should return false when arguments are explicit undefined.', () => {
       expect(compareValidator.validate(123, undefined)).toBeFalsy();
     });
+
     it('Should return false when arguments are explicit null.', () => {
       expect(compareValidator.validate(123, null)).toBeFalsy();
     });
@@ -60,14 +65,17 @@ describe('CompareValidator', () => {
         object: { field2: 'value' },
         constraints: ['field2'],
       };
-      expect(compareValidator.defaultMessage(args)).toBe('values from properties field2 and field1 are different');
+      expect(compareValidator.defaultMessage(args)).toBe("Values from properties 'field2' and 'field1' are different.");
     });
+
     it('Should return null when arguments are undefined.', () => {
       expect(compareValidator.defaultMessage()).toBeNull();
     });
+
     it('Should return null when arguments are explicit undefined.', () => {
       expect(compareValidator.defaultMessage(undefined)).toBeNull();
     });
+
     it('Should return null when arguments are explicit null.', () => {
       expect(compareValidator.defaultMessage(null)).toBeNull();
     });

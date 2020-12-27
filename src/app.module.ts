@@ -1,20 +1,22 @@
 import { Module } from '@nestjs/common';
-import { APP_FILTER } from '@nestjs/core';
+import { MongooseModule } from '@nestjs/mongoose';
 
 import { AppController } from './app.controller';
-import { DatabaseModule } from './core';
-import { AccountModule } from './features';
-import { SharedModule } from './shared';
-import { HttpErrorFilter } from './shared/filters';
+import { config } from './core/config';
+import { AccountModule } from './features/accounts/account.module';
+
+const { user, password, type, host, port, name } = config.database;
 
 @Module({
-  imports: [DatabaseModule, AccountModule, SharedModule],
-  controllers: [AppController],
-  providers: [
-    {
-      provide: APP_FILTER,
-      useClass: HttpErrorFilter,
-    },
+  imports: [
+    MongooseModule.forRoot(`${type}://${user}:${password}@${host}:${port}/${name}`, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useCreateIndex: true,
+      useFindAndModify: false,
+    }),
+    AccountModule,
   ],
+  controllers: [AppController],
 })
 export class AppModule {}

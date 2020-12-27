@@ -16,7 +16,7 @@ export class CompareValidator implements ValidatorConstraintInterface {
 
   defaultMessage(args?: ValidationArguments): string {
     if (args && args.constraints && args.constraints.length > 0 && args.property) {
-      return `Values from properties ${args.constraints.pop()} and ${args.property} are different`;
+      return `Values from properties '${args.constraints.pop()}' and '${args.property}' are different.`;
     }
 
     return null;

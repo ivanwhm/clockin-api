@@ -1,11 +1,11 @@
 import { IsNotEmpty, Matches, MaxLength, MinLength, Validate } from 'class-validator';
-import { CompareValidator } from 'src/shared/validators';
+import { CompareValidator } from 'src/core/validators/compare.validator';
 
-import { IsUsernameTakenValidator } from '../../validators';
+import { IsUsernameTakenValidator } from '../../validators/is-username-taken.validator';
 
 export class CreateAccount {
   @IsNotEmpty({ message: 'Username is required.' })
-  @Matches(/^[a-zA-Z0-9_]+$/, { message: 'Username is invalid, we only accept letters, numbers and underscore.' })
+  @Matches(/^[a-zA-Z0-9_.]+$/, { message: 'Username is invalid.' })
   @MinLength(3, { message: 'Username must have at least 3 characters.' })
   @MaxLength(30, { message: 'Username must have a maximum of 30 characters.' })
   @Validate(IsUsernameTakenValidator)
