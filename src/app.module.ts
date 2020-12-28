@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { AppController } from './app.controller';
-import { config } from './core/config';
+import { config } from './core/config/config';
 import { AccountModule } from './features/accounts/account.module';
 
 const { user, password, type, host, port, name } = config.database;

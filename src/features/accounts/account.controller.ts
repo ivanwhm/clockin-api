@@ -1,6 +1,6 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 
-import { CreateAccount } from './dtos/payloads/create-account';
+import { CreateAccount } from './dtos/requests/create-account';
 import { CreatedAccount } from './dtos/responses/created-account';
 import { AccountService } from './services/account.service';
 
@@ -10,8 +10,8 @@ export class AccountController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() payload: CreateAccount): Promise<CreatedAccount> {
-    const { username, password } = payload;
+  async create(@Body() request: CreateAccount): Promise<CreatedAccount> {
+    const { username, password } = request;
     return this.service.create(username, password);
   }
 }

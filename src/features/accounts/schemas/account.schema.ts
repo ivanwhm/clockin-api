@@ -1,8 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { MongoTimestamps } from 'src/core/interfaces/mongo-timestamps';
 
-export type AccountDocument = Account & Document & MongoTimestamps;
+export type AccountDocument = Account & Document;
 
 @Schema({
   timestamps: true,
@@ -14,6 +13,9 @@ export class Account {
 
   @Prop({ required: true, unique: true, minlength: 8, maxlength: 150 })
   password: string;
+
+  readonly createdAt: Date;
+  readonly updatedAt: Date;
 }
 
 export const AccountSchema = SchemaFactory.createForClass(Account);
