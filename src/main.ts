@@ -1,17 +1,17 @@
-import 'dotenv/config';
-
 import { Logger, ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { useContainer } from 'class-validator';
-import * as compression from 'compression';
-import * as helmet from 'helmet';
 
 import { AppModule } from './app.module';
-import { config } from './core/config/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const port = 3000;
+
+  const configService = app.get(ConfigService);
+  const protocol = configService.get<string>('APP_PROTOCOL');
+  const hostname = configService.get<string>('APP_HOST');
+  const port = configService.get<string>('APP_PORT');
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -20,13 +20,11 @@ async function bootstrap() {
       validationError: { target: true },
     }),
   );
-  app.use(compression());
-  app.use(helmet());
   app.enableCors();
 
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   await app.listen(port);
-  Logger.log(`Server started on ${config.app.protocol}://${config.app.host}:${port}`, 'Bootstrap');
+  Logger.log(`Server started on ${protocol}://${hostname}:${port}`, 'Bootstrap');
 }
 bootstrap();
