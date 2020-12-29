@@ -12,6 +12,7 @@ export class AccountController {
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() request: CreateAccount): Promise<CreatedAccount> {
     const { username, password } = request;
-    return this.service.create(username, password);
+
+    return await this.service.create(username, password);
   }
 }

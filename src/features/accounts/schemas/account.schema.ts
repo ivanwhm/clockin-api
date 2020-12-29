@@ -11,7 +11,7 @@ export class Account {
   @Prop({ required: true, unique: true, minlength: 3, maxlength: 30 })
   username: string;
 
-  @Prop({ required: true, unique: true, minlength: 8, maxlength: 150 })
+  @Prop({ required: true, minlength: 8, maxlength: 150 })
   password: string;
 
   readonly createdAt: Date;

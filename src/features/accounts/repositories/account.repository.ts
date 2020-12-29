@@ -13,10 +13,10 @@ export class AccountRepository {
     const accountModel = new this.accountModel({ username, password });
     const createdAccount = await accountModel.save();
 
-    return new CreatedAccount(username, createdAccount.createdAt);
+    return new CreatedAccount(createdAccount.username, createdAccount.createdAt);
   }
 
-  existsByUsername(username: string): Promise<boolean> {
-    return this.accountModel.exists({ username });
+  async existsByUsername(username: string): Promise<boolean> {
+    return await this.accountModel.exists({ username });
   }
 }
