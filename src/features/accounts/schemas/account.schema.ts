@@ -1,13 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-export type AccountDocument = Account & Document;
-
 @Schema({
   timestamps: true,
   validateBeforeSave: true,
 })
-export class Account {
+export class Account extends Document {
   @Prop({ required: true, unique: true, minlength: 3, maxlength: 30 })
   username: string;
 
@@ -18,4 +16,5 @@ export class Account {
   readonly updatedAt: Date;
 }
 
+export type AccountDocument = Account;
 export const AccountSchema = SchemaFactory.createForClass(Account);

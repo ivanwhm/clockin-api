@@ -9,7 +9,7 @@ export class AccountService {
 
   async create(username: string, password: string): Promise<CreatedAccount> {
     try {
-      return await this.repository.create(username, password);
+      return this.repository.create(username, password);
     } catch (error) {
       const message = `An error happened while trying to create an account with username '${username}'.`;
       throw new HttpException(message, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -18,7 +18,7 @@ export class AccountService {
 
   async existsByUsername(username: string): Promise<boolean> {
     try {
-      return await this.repository.existsByUsername(username);
+      return this.repository.existsByUsername(username);
     } catch (error) {
       const message = `An error happened while trying to check wether the username '${username}' exists or not.`;
       throw new HttpException(message, HttpStatus.INTERNAL_SERVER_ERROR);

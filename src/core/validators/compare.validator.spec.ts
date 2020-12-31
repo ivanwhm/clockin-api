@@ -3,10 +3,16 @@ import { ValidationArguments } from 'class-validator';
 import { CompareValidator } from './compare.validator';
 
 describe('CompareValidator', () => {
-  let compareValidator: CompareValidator;
+  let validator: CompareValidator;
 
   beforeEach(() => {
-    compareValidator = new CompareValidator();
+    validator = new CompareValidator();
+  });
+
+  describe('instantiating', () => {
+    it('Should exists', () => {
+      expect(validator).toBeTruthy();
+    });
   });
 
   describe('validate', () => {
@@ -18,7 +24,7 @@ describe('CompareValidator', () => {
         object: { field2: 'value' },
         constraints: ['field2'],
       };
-      expect(compareValidator.validate('value', args)).toBeTruthy();
+      expect(validator.validate('value', args)).toBeTruthy();
     });
 
     it('Should return false when values are different.', () => {
@@ -29,7 +35,7 @@ describe('CompareValidator', () => {
         object: { field2: 'value2' },
         constraints: ['field2'],
       };
-      expect(compareValidator.validate('value1', args)).toBeFalsy();
+      expect(validator.validate('value1', args)).toBeFalsy();
     });
 
     it('Should return false when values are from different types.', () => {
@@ -40,19 +46,19 @@ describe('CompareValidator', () => {
         object: { field2: new Date() },
         constraints: ['field2'],
       };
-      expect(compareValidator.validate(123, args)).toBeFalsy();
+      expect(validator.validate(123, args)).toBeFalsy();
     });
 
     it('Should return false when arguments are undefined.', () => {
-      expect(compareValidator.validate(123)).toBeFalsy();
+      expect(validator.validate(123)).toBeFalsy();
     });
 
     it('Should return false when arguments are explicit undefined.', () => {
-      expect(compareValidator.validate(123, undefined)).toBeFalsy();
+      expect(validator.validate(123, undefined)).toBeFalsy();
     });
 
     it('Should return false when arguments are explicit null.', () => {
-      expect(compareValidator.validate(123, null)).toBeFalsy();
+      expect(validator.validate(123, null)).toBeFalsy();
     });
   });
 
@@ -65,19 +71,19 @@ describe('CompareValidator', () => {
         object: { field2: 'value' },
         constraints: ['field2'],
       };
-      expect(compareValidator.defaultMessage(args)).toBe("Values from properties 'field2' and 'field1' are different.");
+      expect(validator.defaultMessage(args)).toBe("Values from properties 'field2' and 'field1' are different.");
     });
 
     it('Should return null when arguments are undefined.', () => {
-      expect(compareValidator.defaultMessage()).toBeNull();
+      expect(validator.defaultMessage()).toBeNull();
     });
 
     it('Should return null when arguments are explicit undefined.', () => {
-      expect(compareValidator.defaultMessage(undefined)).toBeNull();
+      expect(validator.defaultMessage(undefined)).toBeNull();
     });
 
     it('Should return null when arguments are explicit null.', () => {
-      expect(compareValidator.defaultMessage(null)).toBeNull();
+      expect(validator.defaultMessage(null)).toBeNull();
     });
   });
 });

@@ -17,6 +17,6 @@ export class AccountRepository {
   }
 
   async existsByUsername(username: string): Promise<boolean> {
-    return await this.accountModel.exists({ username });
+    return this.accountModel.exists({ username });
   }
 }

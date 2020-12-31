@@ -2,6 +2,7 @@ import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface 
 
 @ValidatorConstraint()
 export class CompareValidator implements ValidatorConstraintInterface {
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   validate(value: any, args?: ValidationArguments): boolean {
     if (args) {
       for (const constraint of args.constraints) {
