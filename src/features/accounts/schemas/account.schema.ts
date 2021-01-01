@@ -16,5 +16,4 @@ export class Account extends Document {
   readonly updatedAt: Date;
 }
 
-export type AccountDocument = Account;
 export const AccountSchema = SchemaFactory.createForClass(Account);
