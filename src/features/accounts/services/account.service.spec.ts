@@ -1,4 +1,3 @@
-import { getModelToken } from '@nestjs/mongoose';
 import { Test } from '@nestjs/testing';
 
 import { CreatedAccount } from '../dtos/responses/created-account';
@@ -13,11 +12,25 @@ describe('AccountService', () => {
     const module = await Test.createTestingModule({
       providers: [
         {
-          provide: getModelToken('Account'),
-          // eslint-disable-next-line @typescript-eslint/no-empty-function
-          useValue: () => {},
+          provide: AccountRepository,
+          useValue: {
+            create: jest.fn().mockImplementation((username: string) => {
+              if (!username) {
+                throw new Error();
+              } else {
+                const result = new CreatedAccount(username, new Date('2021-01-01T22:04:47.508Z'));
+                return Promise.resolve(result);
+              }
+            }),
+            existsByUsername: jest.fn().mockImplementation((username: string) => {
+              if (!username) {
+                throw new Error();
+              } else {
+                return Promise.resolve(username === 'exists');
+              }
+            }),
+          },
         },
-        AccountRepository,
         AccountService,
       ],
     }).compile();
@@ -30,66 +43,64 @@ describe('AccountService', () => {
     jest.clearAllMocks();
   });
 
-  it('Should be defined', () => {
+  it('Should be defined.', () => {
     expect(service).toBeDefined();
   });
 
   describe('create', () => {
-    it('Should create an account', async () => {
-      const createdDate = new Date();
-      const createdUsername = 'username';
-      const mockCreate = new CreatedAccount(createdUsername, createdDate);
+    it('Should create an account.', async () => {
+      const username = 'username';
+      const password = 'password';
+      const spyRepository = jest.spyOn(repository, 'create');
 
-      jest.spyOn(repository, 'create').mockImplementation(() => Promise.resolve(mockCreate));
-
-      const result = await service.create(createdUsername, 'password');
+      const result = await service.create(username, password);
 
       expect(result).toBeTruthy();
-      expect(result.username).toBe(createdUsername);
-      expect(result.createdAt).toBe(createdDate);
+      expect(result.username).toBe(username);
+      expect(result.createdAt).toStrictEqual(new Date('2021-01-01T22:04:47.508Z'));
+      expect(spyRepository).toBeCalledWith(username, password);
+      expect(spyRepository).toBeCalledTimes(1);
     });
 
-    it('Should thrown an exception', async () => {
-      jest.spyOn(repository, 'create').mockImplementation(() => {
-        throw new Error();
-      });
-
+    it('Should thrown an exception.', async () => {
       try {
-        await service.create('username', 'password');
+        await service.create('', '');
         expect(true).toBe(false);
       } catch (e) {
-        expect(e.message).toBe("An error happened while trying to create an account with username 'username'.");
+        expect(e.message).toBe("An error happened while trying to create an account with username ''.");
       }
     });
   });
 
   describe('existsByUsername', () => {
-    it('Should return true', async () => {
-      jest.spyOn(repository, 'existsByUsername').mockImplementation(() => Promise.resolve(true));
+    it('Should return true.', async () => {
+      const username = 'exists';
+      const spyRepository = jest.spyOn(repository, 'existsByUsername');
 
-      const result = await service.existsByUsername('username');
+      const result = await service.existsByUsername(username);
 
       expect(result).toBeTruthy();
+      expect(spyRepository).toBeCalledWith(username);
+      expect(spyRepository).toBeCalledTimes(1);
     });
 
-    it('Should return false', async () => {
-      jest.spyOn(repository, 'existsByUsername').mockImplementation(() => Promise.resolve(false));
+    it('Should return false.', async () => {
+      const username = 'notExists';
+      const spyRepository = jest.spyOn(repository, 'existsByUsername');
 
-      const result = await service.existsByUsername('username');
+      const result = await service.existsByUsername(username);
 
       expect(result).toBeFalsy();
+      expect(spyRepository).toBeCalledWith(username);
+      expect(spyRepository).toBeCalledTimes(1);
     });
 
-    it('Should thrown an exception', async () => {
-      jest.spyOn(repository, 'existsByUsername').mockImplementation(() => {
-        throw new Error();
-      });
-
+    it('Should thrown an exception.', async () => {
       try {
-        await service.existsByUsername('username');
+        await service.existsByUsername('');
         expect(true).toBe(false);
       } catch (e) {
-        expect(e.message).toBe("An error happened while trying to check wether the username 'username' exists or not.");
+        expect(e.message).toBe("An error happened while trying to check wether the username '' exists or not.");
       }
     });
   });

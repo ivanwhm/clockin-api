@@ -1,7 +1,5 @@
-import { getModelToken } from '@nestjs/mongoose';
 import { Test } from '@nestjs/testing';
 
-import { AccountRepository } from '../repositories/account.repository';
 import { AccountService } from '../services/account.service';
 import { IsUsernameTakenValidator } from './is-username-taken.validator';
 
@@ -12,43 +10,52 @@ describe('IsUsernameTakenValidator', () => {
   beforeEach(async () => {
     const module = await Test.createTestingModule({
       providers: [
-        {
-          provide: getModelToken('Account'),
-          // eslint-disable-next-line @typescript-eslint/no-empty-function
-          useValue: () => {},
-        },
-        AccountRepository,
-        AccountService,
         IsUsernameTakenValidator,
+        {
+          provide: AccountService,
+          useValue: {
+            existsByUsername: jest.fn().mockImplementation((username: string) => {
+              return Promise.resolve(username !== 'exists');
+            }),
+          },
+        },
       ],
     }).compile();
 
-    service = module.get<AccountService>(AccountService);
     validator = module.get<IsUsernameTakenValidator>(IsUsernameTakenValidator);
+    service = module.get<AccountService>(AccountService);
   });
 
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it('Should be defined', () => {
+  it('Should be defined.', () => {
     expect(validator).toBeDefined();
   });
 
   describe('validate', () => {
-    it('Should return false', async () => {
-      jest.spyOn(service, 'existsByUsername').mockImplementation(() => Promise.resolve(true));
-      expect(await validator.validate('username')).toBeFalsy();
+    it('Should not exists.', async () => {
+      const username = 'notExists';
+      const spyService = jest.spyOn(service, 'existsByUsername');
+
+      expect(await validator.validate(username)).toBeFalsy();
+      expect(spyService).toBeCalledWith(username);
+      expect(spyService).toBeCalledTimes(1);
     });
 
-    it('Should return true', async () => {
-      jest.spyOn(service, 'existsByUsername').mockImplementation(() => Promise.resolve(false));
-      expect(await validator.validate('username')).toBeTruthy();
+    it('Should exists.', async () => {
+      const username = 'exists';
+      const spyService = jest.spyOn(service, 'existsByUsername');
+
+      expect(await validator.validate(username)).toBeTruthy();
+      expect(spyService).toBeCalledWith(username);
+      expect(spyService).toBeCalledTimes(1);
     });
   });
 
   describe('defaultMessage', () => {
-    it('Should return default message', () => {
+    it('Should return the default message.', () => {
       expect(validator.defaultMessage()).toBe('Username has already been taken.');
     });
   });

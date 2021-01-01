@@ -6,6 +6,7 @@ import { AccountService } from './services/account.service';
 
 describe('AccountController', () => {
   let controller: AccountController;
+  let service: AccountService;
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
@@ -14,8 +15,8 @@ describe('AccountController', () => {
         {
           provide: AccountService,
           useValue: {
-            create: jest.fn().mockImplementation(() => {
-              const result = new CreatedAccount('username', new Date('2021-01-01T22:04:47.508Z'));
+            create: jest.fn().mockImplementation((username: string) => {
+              const result = new CreatedAccount(username, new Date('2021-01-01T22:04:47.508Z'));
               return Promise.resolve(result);
             }),
           },
@@ -24,6 +25,11 @@ describe('AccountController', () => {
     }).compile();
 
     controller = module.get<AccountController>(AccountController);
+    service = module.get<AccountService>(AccountService);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   it('Should be defined.', () => {
@@ -32,17 +38,19 @@ describe('AccountController', () => {
 
   describe('create', () => {
     it('Should create an account.', async () => {
-      const request = {
+      const spyService = jest.spyOn(service, 'create');
+
+      const result = await controller.create({
         username: 'username',
         password: 'password',
         passwordConfirmation: 'password',
-      };
-
-      const result = await controller.create(request);
+      });
 
       expect(result).toBeDefined();
       expect(result.username).toBe('username');
       expect(result.createdAt).toStrictEqual(new Date('2021-01-01T22:04:47.508Z'));
+      expect(spyService).toBeCalledWith('username', 'password');
+      expect(spyService).toBeCalledTimes(1);
     });
   });
 });
