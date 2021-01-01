@@ -9,10 +9,8 @@ describe('CompareValidator', () => {
     validator = new CompareValidator();
   });
 
-  describe('instantiating', () => {
-    it('Should exists', () => {
-      expect(validator).toBeTruthy();
-    });
+  it('Should be defined.', () => {
+    expect(validator).toBeDefined();
   });
 
   describe('validate', () => {

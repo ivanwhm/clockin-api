@@ -30,10 +30,8 @@ describe('AccountService', () => {
     jest.clearAllMocks();
   });
 
-  describe('instantiation', () => {
-    it('Should exists', () => {
-      expect(service).toBeTruthy();
-    });
+  it('Should be defined', () => {
+    expect(service).toBeDefined();
   });
 
   describe('create', () => {

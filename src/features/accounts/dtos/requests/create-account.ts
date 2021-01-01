@@ -1,6 +1,6 @@
 import { IsNotEmpty, Matches, MaxLength, MinLength, Validate } from 'class-validator';
-import { CompareValidator } from 'src/core/validators/compare.validator';
 
+import { CompareValidator } from '../../../../core/validators/compare.validator';
 import { IsUsernameTakenValidator } from '../../validators/is-username-taken.validator';
 
 export class CreateAccount {

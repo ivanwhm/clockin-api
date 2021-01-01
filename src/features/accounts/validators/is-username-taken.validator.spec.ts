@@ -31,10 +31,8 @@ describe('IsUsernameTakenValidator', () => {
     jest.clearAllMocks();
   });
 
-  describe('instantiation', () => {
-    it('Should exists', () => {
-      expect(validator).toBeTruthy();
-    });
+  it('Should be defined', () => {
+    expect(validator).toBeDefined();
   });
 
   describe('validate', () => {
