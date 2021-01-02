@@ -54,6 +54,7 @@
     "husky": "^4.3.6",
     "jest": "26.0.1",
     "lint-staged": "^10.5.3",
+    "mongodb-memory-server": "^6.9.2",
     "prettier": "^1.19.1",
     "supertest": "^4.0.2",
     "ts-jest": "26.1.0",
@@ -83,8 +84,7 @@
   },
   "lint-staged": {
     "*.ts": [
-      "npm run lint -- --fix",
-      "cross-env CI=true npm run test --bail --findRelatedTests --passWithNoTests"
+      "npm run lint -- --fix"
     ]
   }
 }

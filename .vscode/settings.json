@@ -5,6 +5,7 @@
         "maxlength",
         "metatype",
         "minlength",
+        "mongod",
         "mongodb",
         "nestjs",
         "prebuild"

@@ -19,4 +19,8 @@ export class AccountRepository {
   async existsByUsername(username: string): Promise<boolean> {
     return this.accountModel.exists({ username });
   }
+
+  async deleteAll(): Promise<void> {
+    await this.accountModel.deleteMany();
+  }
 }
