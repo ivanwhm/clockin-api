@@ -12,12 +12,13 @@
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "cross-env NODE_ENV=development cross-env TZ=UTC nest start",
-    "start:dev": "cross-env NODE_ENV=development cross-env TZ=UTC nest start --watch",
-    "start:debug": "cross-env NODE_ENV=development cross-env TZ=UTC nest start --debug --watch",
-    "start:prod": "cross-env NODE_ENV=production cross-env TZ=UTC node dist/main",
+    "start": "nest start",
+    "start:dev": "nest start --watch",
+    "start:debug": "nest start --debug --watch",
+    "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
     "test": "jest --passWithNoTests",
+    "test:ver": "jest --verbose",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
@@ -47,14 +48,12 @@
     "@types/supertest": "^2.0.8",
     "@typescript-eslint/eslint-plugin": "3.0.2",
     "@typescript-eslint/parser": "3.0.2",
-    "cross-env": "^7.0.3",
     "eslint": "7.1.0",
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-import": "^2.20.1",
     "husky": "^4.3.6",
     "jest": "26.0.1",
     "lint-staged": "^10.5.3",
-    "mongodb-memory-server": "^6.9.2",
     "prettier": "^1.19.1",
     "supertest": "^4.0.2",
     "ts-jest": "26.1.0",
@@ -84,7 +83,8 @@
   },
   "lint-staged": {
     "*.ts": [
-      "npm run lint -- --fix"
+      "npm run lint -- --fix",
+      "npm run test --bail --findRelatedTests --passWithNoTests"
     ]
   }
 }

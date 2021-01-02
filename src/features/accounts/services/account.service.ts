@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 
 import { CreatedAccount } from '../dtos/responses/created-account';
 import { AccountRepository } from '../repositories/account.repository';
@@ -12,7 +12,7 @@ export class AccountService {
       return this.repository.create(username, password);
     } catch (error) {
       const message = `An error happened while trying to create an account with username '${username}'.`;
-      throw new HttpException(message, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new InternalServerErrorException(message);
     }
   }
 
@@ -21,7 +21,7 @@ export class AccountService {
       return this.repository.existsByUsername(username);
     } catch (error) {
       const message = `An error happened while trying to check wether the username '${username}' exists or not.`;
-      throw new HttpException(message, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new InternalServerErrorException(message);
     }
   }
 }

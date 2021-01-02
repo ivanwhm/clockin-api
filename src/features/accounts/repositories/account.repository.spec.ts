@@ -1,41 +1,38 @@
-import { MongooseModule } from '@nestjs/mongoose';
+import { getModelToken } from '@nestjs/mongoose';
 import { Test } from '@nestjs/testing';
-import { MongoMemoryServer } from 'mongodb-memory-server';
 
-import { AccountSchema } from '../schemas/account.schema';
+import { Account } from '../schemas/account.schema';
 import { AccountRepository } from './account.repository';
 
+const mockRepository = {
+  create: jest.fn().mockReturnValue({
+    username: 'username',
+    createdAt: new Date('2021-01-01T22:04:47.508Z'),
+  }),
+  exists: jest.fn().mockImplementation((args: any) => {
+    return Promise.resolve(args.username === 'exist');
+  }),
+};
+
 describe('AccountRepository', () => {
-  let mongod: MongoMemoryServer;
   let repository: AccountRepository;
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
-      imports: [
-        MongooseModule.forRootAsync({
-          useFactory: async () => {
-            mongod = new MongoMemoryServer();
-            const mongoUri = await mongod.getUri();
-            return {
-              uri: mongoUri,
-              useNewUrlParser: true,
-              useUnifiedTopology: true,
-              useCreateIndex: true,
-              useFindAndModify: false,
-            };
-          },
-        }),
-        MongooseModule.forFeature([
-          {
-            name: 'Account',
-            schema: AccountSchema,
-          },
-        ]),
+      providers: [
+        {
+          provide: getModelToken(Account.name),
+          useValue: mockRepository,
+        },
+        AccountRepository,
       ],
-      providers: [AccountRepository],
     }).compile();
 
     repository = module.get<AccountRepository>(AccountRepository);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   it('Should be defined.', () => {
@@ -44,44 +41,37 @@ describe('AccountRepository', () => {
 
   describe('create', () => {
     it('Should create an account.', async () => {
-      const result = await repository.create('username', 'password');
+      const username = 'username';
+      const password = 'password';
+
+      const result = await repository.create(username, password);
 
       expect(result).toBeDefined();
-      expect(result.username).toBe('username');
+      expect(result.username).toBe(username);
+      expect(mockRepository.create).toBeCalledWith({ username, password });
+      expect(mockRepository.create).toBeCalledTimes(1);
     });
   });
 
   describe('existsByUsername', () => {
     it('Should not exist.', async () => {
-      await repository.deleteAll();
+      const username = 'notExist';
 
-      const result = await repository.existsByUsername('username');
+      const result = await repository.existsByUsername(username);
 
       expect(result).toBeFalsy();
+      expect(mockRepository.exists).toBeCalledWith({ username });
+      expect(mockRepository.exists).toBeCalledTimes(1);
     });
 
     it('Should exist.', async () => {
-      await repository.deleteAll();
-      await repository.create('username', 'password');
+      const username = 'exist';
 
-      const result = await repository.existsByUsername('username');
+      const result = await repository.existsByUsername(username);
 
       expect(result).toBeTruthy();
+      expect(mockRepository.exists).toBeCalledWith({ username });
+      expect(mockRepository.exists).toBeCalledTimes(1);
     });
-  });
-
-  describe('deleteAll', () => {
-    it('Should delete everything.', async () => {
-      await repository.create('username', 'password');
-      await repository.deleteAll();
-
-      const result = await repository.existsByUsername('username');
-
-      expect(result).toBeFalsy();
-    });
-  });
-
-  afterAll(async () => {
-    if (mongod) await mongod.stop();
   });
 });

@@ -7,20 +7,15 @@ import { Account } from '../schemas/account.schema';
 
 @Injectable()
 export class AccountRepository {
-  constructor(@InjectModel(Account.name) private readonly accountModel: Model<Account>) {}
+  constructor(@InjectModel(Account.name) private readonly model: Model<Account>) {}
 
   async create(username: string, password: string): Promise<CreatedAccount> {
-    const accountModel = new this.accountModel({ username, password });
-    const createdAccount = await accountModel.save();
+    const created = await this.model.create({ username, password } as any);
 
-    return new CreatedAccount(createdAccount.username, createdAccount.createdAt);
+    return new CreatedAccount(created.username, created.createdAt);
   }
 
   async existsByUsername(username: string): Promise<boolean> {
-    return this.accountModel.exists({ username });
-  }
-
-  async deleteAll(): Promise<void> {
-    await this.accountModel.deleteMany();
+    return this.model.exists({ username });
   }
 }
