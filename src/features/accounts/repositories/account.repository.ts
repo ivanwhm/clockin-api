@@ -9,8 +9,8 @@ import { Account } from '../schemas/account.schema';
 export class AccountRepository {
   constructor(@InjectModel(Account.name) private readonly model: Model<Account>) {}
 
-  async create(username: string, password: string): Promise<CreatedAccount> {
-    const created = await this.model.create({ username, password } as any);
+  async create(username: string, password: string, salt: string): Promise<CreatedAccount> {
+    const created = await this.model.create({ username, password, salt });
 
     return new CreatedAccount(created.username, created.createdAt);
   }

@@ -12,8 +12,11 @@ export class Account extends Document {
   @Prop({ required: true, minlength: 8, maxlength: 150 })
   password: string;
 
-  readonly createdAt: Date;
-  readonly updatedAt: Date;
+  @Prop({ required: true })
+  salt: string;
+
+  readonly createdAt?: Date;
+  readonly updatedAt?: Date;
 }
 
 export const AccountSchema = SchemaFactory.createForClass(Account);

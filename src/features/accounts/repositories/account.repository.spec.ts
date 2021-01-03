@@ -43,12 +43,13 @@ describe('AccountRepository', () => {
     it('Should create an account.', async () => {
       const username = 'username';
       const password = 'password';
+      const salt = 'salt';
 
-      const result = await repository.create(username, password);
+      const result = await repository.create(username, password, salt);
 
       expect(result).toBeDefined();
       expect(result.username).toBe(username);
-      expect(mockRepository.create).toBeCalledWith({ username, password });
+      expect(mockRepository.create).toBeCalledWith({ username, password, salt });
       expect(mockRepository.create).toBeCalledTimes(1);
     });
   });
